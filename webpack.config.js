@@ -16,7 +16,7 @@ module.exports = {
     entry: [
         'webpack-dev-server/client',
         'webpack/hot/only-dev-server',
-        path.join(__dirname, 'src', 'index.js')
+        path.join(__dirname, 'src', 'index.jsx')
     ],
 
     output: {

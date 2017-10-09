@@ -1,11 +1,14 @@
 import {
+    FETCH_PRODUCTS_INIT,
     FETCH_PRODUCTS_SUCCESS,
     FETCH_PRODUCTS_FAILURE,
+    FETCH_PRODUCT_INIT,
     FETCH_PRODUCT_SUCCESS,
     FETCH_PRODUCT_FAILURE,
+    SAVE_PRODUCT_INIT,
     SAVE_PRODUCT_SUCCESS,
     SAVE_PRODUCT_FAILURE
-} from 'types';
+} from './types';
 
 import API from '../api';
 
@@ -44,7 +47,7 @@ export function saveProductSuccess (product) {
     };
 }
 
-export function fetchProductFailure (error) {
+export function saveProductFailure (error) {
     return {
         type: SAVE_PRODUCT_FAILURE,
         payload: error
@@ -53,10 +56,10 @@ export function fetchProductFailure (error) {
 
 // Actions Creators (Async)
 export function fetchProducts() {
-    return async (dispatch => {
+    return async (dispatch) => {
         dispatch(() => {
             return {
-                type: 'FETCH_PRODUCT_INIT'
+                type: FETCH_PRODUCTS_INIT
             }
         })
 
@@ -66,11 +69,11 @@ export function fetchProducts() {
         } catch(error) {
             return dispatch(fetchProductsFailure(error));
         }
-    });
+    };
 }
 
 export function fetchProduct(productId  ) {
-    return async (dispatch => {
+    return async (dispatch) => {
         dispatch(() => {
             return {
                 type: 'FETCH_PRODUCT_INIT'
@@ -79,10 +82,27 @@ export function fetchProduct(productId  ) {
 
         try {
             const data = await API.products.getSingle(productId);
+            console.log(data);
+            return dispatch(fetchProductSuccess(data.product));
+        } catch (error) {
+            return dispatch(fetchProductFailure(error));
+          }
+    };
+}
+
+export function saveProduct (product) {
+    return async (dispatch) => {
+      dispatch(() => {
+        return {
+          type: SAVE_PRODUCT_INIT
         }
-    })
-}
-
-export function saveProduct() {
-
-}
+      })
+  
+      try {
+        await API.products.save(product);
+        return dispatch(saveProductSuccess());
+      } catch (error) {
+        return dispatch(saveProductFailure(error));
+      }
+    };
+  }
