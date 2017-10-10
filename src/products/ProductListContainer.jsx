@@ -14,10 +14,6 @@ class ProductListContainer extends Component {
         await this.props.productActions.fetchProducts();
     }
 
-    async componentWillMount() {
-        await this.props.productActions.fetchProducts();
-    }
-
     render() {
         return (
             <ProductList 
