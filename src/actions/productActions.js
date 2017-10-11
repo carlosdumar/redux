@@ -29,7 +29,7 @@ export function fetchProductsFailure (error) {
 export function fetchProductSuccess (product) {
     return {
         type: FETCH_PRODUCT_SUCCESS,
-        payload: products
+        payload: product
     };
 }
 
