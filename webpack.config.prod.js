@@ -1,9 +1,9 @@
 const webpack = require('webpack')
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlufin = require('extract-text-webpack-plugin');
 
 module.exports = {
-    devtool: 'cheap-module-eval-source-map',
 
     resolve: {
         extensions: ['.js', '.jsx'],
@@ -13,11 +13,7 @@ module.exports = {
         ]
     },
 
-    entry: [
-        'webpack-dev-server/client',
-        'webpack/hot/only-dev-server',
-        path.join(__dirname, 'src', 'index.jsx')
-    ],
+    entry: path.join(__dirname, 'src', 'index.jsx'),
 
     output: {
         path: path.join(__dirname, 'build'),
@@ -61,21 +57,31 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
+        new webpack.DefinePlugin({
+            'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')}
+        }),
+        new webpack.optimize.OccurrenceOrderPlugin(true),
+        new ExtractTextPlufin(path.join(__dirname, 'build', 'style.css')),
         new webpack.NoEmitOnErrorsPlugin(),
         new HtmlWebpackPlugin({
             title: 'Redux Ecommerce',
             template: path.join(__dirname, 'src', 'index.html'),
             filename: 'index.html'
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: { warnings: false},
+            mangle: { except: ['$super', '$', 'exports', 'require']}
         })
     ],
+
+    target: 'web',
 
     devServer: {
         host: '0.0.0.0',
         hot: true,
-        port: 8080,
+        port: 8081,
         inline: true,
-        contentBase: path.join(__dirname, 'src'),
+        contentBase: path.join(__dirname, './build'),
         historyApiFallback: true    
     }
 };
